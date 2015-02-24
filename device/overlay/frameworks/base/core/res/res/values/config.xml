@@ -213,7 +213,7 @@
     <bool name="config_feature_iwlan_enabled">true</bool>
 
     <!-- Is the device capable of supporting digital pen -->
-    <bool name="config_digitalPenCapable">true</bool>
+    <bool name="config_digitalPenCapable">false</bool>
 
     <string-array name="config_mobile_tcp_buffers">
         <item>"lte:2097152,4194304,8388608,262144,524288,1048576"</item>
