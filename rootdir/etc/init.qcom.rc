@@ -846,3 +846,8 @@ on property:sys.qbcharger.enable=false
 #    start rootagent
 #on property:persist.sys.rootagent=0
 #    stop rootagent
+
+service RIDL /system/vendor/bin/RIDLClient.exe
+    class late_start
+    user root
+    group root
