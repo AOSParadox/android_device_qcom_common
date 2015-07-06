@@ -766,8 +766,8 @@ service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk
 #    disabled
 #    oneshot
 
-#service charger /charger
-#    class charger
+service charger /charger
+    class charger
 
 #service ssr_diag /system/bin/ssr_diag
 #    class late_start
