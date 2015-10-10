@@ -540,7 +540,7 @@ PRODUCT_PACKAGES := \
     BTTestApp \
     HiddTestApp \
     BTLogKit \
-    BTLogSave
+    BTLogSave \
     Calculator \
     Calendar \
     Camera \
