@@ -38,6 +38,12 @@
 #include "cutils/properties.h"
 #include "cutils/android_reboot.h"
 
+#if defined(__LP64__)
+#define QSEECOM_LIBRARY_PATH "/vendor/lib64/libQSEEComAPI.so"
+#else
+#define QSEECOM_LIBRARY_PATH "/vendor/lib/libQSEEComAPI.so"
+#endif
+
 
 // When device comes up or when user tries to change the password, user can
 // try wrong password upto a certain number of times. If user enters wrong
@@ -46,12 +52,20 @@
 // wipe userdata partition once this error is received.
 #define ERR_MAX_PASSWORD_ATTEMPTS -10
 #define QSEECOM_DISK_ENCRYPTION 1
-#define QSEECOM_ICE_DISK_ENCRYPTION 3
+#define QSEECOM_UFS_ICE_DISK_ENCRYPTION 3
+#define QSEECOM_SDCC_ICE_DISK_ENCRYPTION 4
 #define MAX_PASSWORD_LEN 32
+#define QTI_ICE_STORAGE_UFS 1
+#define QTI_ICE_STORAGE_SDCC 2
 
 /* Operations that be performed on HW based device encryption key */
 #define SET_HW_DISK_ENC_KEY 1
 #define UPDATE_HW_DISK_ENC_KEY 2
+#define MAX_DEVICE_ID_LENGTH 4 /* 4 = 3 (MAX_SOC_ID_LENGTH) + 1 */
+
+static unsigned int cpu_id[] = {
+	239, /* MSM8939 SOC ID */
+};
 
 static int loaded_library = 0;
 static unsigned char current_passwd[MAX_PASSWORD_LEN];
@@ -61,10 +75,17 @@ static int (*qseecom_wipe_key)(int);
 
 static int map_usage(int usage)
 {
-    return (is_ice_enabled() && (usage == QSEECOM_DISK_ENCRYPTION)) ?
-                                          QSEECOM_ICE_DISK_ENCRYPTION : usage;
+    int storage_type = is_ice_enabled();
+    if (usage == QSEECOM_DISK_ENCRYPTION) {
+        if (storage_type == QTI_ICE_STORAGE_UFS) {
+            return QSEECOM_UFS_ICE_DISK_ENCRYPTION;
+        }
+        else if (storage_type == QTI_ICE_STORAGE_SDCC) {
+            return QSEECOM_SDCC_ICE_DISK_ENCRYPTION ;
+        }
+    }
+    return usage;
 }
-
 
 static unsigned char* get_tmp_passwd(const char* passwd)
 {
@@ -104,7 +125,7 @@ static int load_qseecom_library()
     if (loaded_library)
         return loaded_library;
 
-    void * handle = dlopen("/vendor/lib/libQSEEComAPI.so", RTLD_NOW);
+    void * handle = dlopen(QSEECOM_LIBRARY_PATH, RTLD_NOW);
     if(handle) {
         dlerror(); /* Clear any existing error */
         *(void **) (&qseecom_create_key) = dlsym(handle,"QSEECom_create_key");
@@ -186,40 +207,6 @@ unsigned int is_hw_disk_encryption(const char* encryption_mode)
     return ret;
 }
 
-int is_ice_enabled(void)
-{
-    /* If (USE_ICE_FLAG) => return 1
-     * if (property set to use gpce) return 0
-     * we are using property to test UFS + GPCE, even though not required
-     * if (storage is ufs) return 1
-     * else return 0 so that emmc based device can work properly
-     */
-#ifdef USE_ICE_FOR_STORAGE_ENCRYPTION
-    SLOGD("Ice enabled = true");
-    return 1;
-#else
-    char enc_hw_type[PATH_MAX];
-    char prop_storage[PATH_MAX];
-    int ice = 0;
-    int i;
-    if (property_get("crypto.fde_enc_hw_type", enc_hw_type, "")) {
-        if(!strncmp(enc_hw_type, "gpce", PROPERTY_VALUE_MAX)) {
-            SLOGD("GPCE would be used for HW FDE");
-            return 0;
-        }
-    }
-
-    if (property_get("ro.boot.bootdevice", prop_storage, "")) {
-        if(strstr(prop_storage, "ufs")) {
-            SLOGD("ICE would be used for HW FDE");
-            return 1;
-        }
-    }
-    SLOGD("GPCE would be used for HW FDE");
-    return 0;
-#endif
-}
-
 int wipe_hw_device_encryption_key(const char* enc_mode)
 {
     if (!enc_mode)
@@ -229,4 +216,76 @@ int wipe_hw_device_encryption_key(const char* enc_mode)
         return qseecom_wipe_key(map_usage(QSEECOM_DISK_ENCRYPTION));
 
     return 0;
+}
+
+/*
+ * By default HW FDE is enabled, if the execution comes to
+ * is_hw_fde_enabled() API then for specific device/soc id,
+ * HW FDE is disabled.
+ */
+#ifdef CONFIG_SWV8_DISK_ENCRYPTION
+unsigned int is_hw_fde_enabled(void)
+{
+    unsigned int device_id = -1;
+    unsigned int array_size;
+    unsigned int status = 1;
+    FILE *fd = NULL;
+    unsigned int i;
+    int ret = -1;
+    char buf[MAX_DEVICE_ID_LENGTH];
+
+    fd = fopen("/sys/devices/soc0/soc_id", "r");
+    if (fd) {
+        ret = fread(buf, 1, MAX_DEVICE_ID_LENGTH, fd);
+        fclose(fd);
+    } else {
+        fd = fopen("/sys/devices/system/soc/soc0/id", "r");
+        if (fd) {
+            ret = fread(buf, 1, MAX_DEVICE_ID_LENGTH, fd);
+            fclose(fd);
+        }
+    }
+
+    if (ret > 0) {
+        device_id = atoi(buf);
+    } else {
+        SLOGE("Failed to read device id");
+        return status;
+    }
+
+    array_size = sizeof(cpu_id) / sizeof(cpu_id[0]);
+    for (i = 0; i < array_size; i++) {
+        if (device_id == cpu_id[i]) {
+            status = 0;
+            break;
+        }
+    }
+
+    return status;
+}
+#else
+unsigned int is_hw_fde_enabled(void)
+{
+    return 1;
+}
+#endif
+
+int is_ice_enabled(void)
+{
+  char prop_storage[PATH_MAX];
+  int storage_type = 0;
+  int fd;
+
+  if (property_get("ro.boot.bootdevice", prop_storage, "")) {
+    if (strstr(prop_storage, "ufs")) {
+      /* All UFS based devices has ICE in it. So we dont need
+       * to check if corresponding device exists or not
+       */
+      storage_type = QTI_ICE_STORAGE_UFS;
+    } else if (strstr(prop_storage, "sdhc")) {
+      if (access("/dev/icesdcc", F_OK) != -1)
+        storage_type = QTI_ICE_STORAGE_SDCC;
+    }
+  }
+  return storage_type;
 }

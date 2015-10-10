@@ -7,6 +7,7 @@ QCOM_BOARD_PLATFORMS += msm8226
 QSD8K_BOARD_PLATFORMS := qsd8k
 
 TARGET_USE_VENDOR_CAMERA_EXT := true
+ANDROID_COMPILE_WITH_JACK := false
 
 # Below projects/packages with LOCAL_MODULEs will be used by
 # PRODUCT_PACKAGES to build LOCAL_MODULEs that are tagged with
@@ -123,7 +124,9 @@ CURL += curl
 
 #DASH
 DASH := libdashplayer
+DASH += libqcmediaplayer
 DASH += qcmediaplayer
+DASH += libextmedia_jni
 
 #DATA_OS
 DATA_OS := librmnetctl
@@ -143,6 +146,7 @@ FASTPOWERON := FastBoot
 #FM
 FM := qcom.fmradio
 FM += libqcomfm_jni
+FM += libfmjni
 
 #GPS
 GPS_HARDWARE := gps.conf
@@ -278,6 +282,7 @@ LIBCAMERA += libmmjpeg_interface
 LIBCAMERA += libqomx_core
 LIBCAMERA += mm-qcamera-app
 LIBCAMERA += camera_test
+LIBCAMERA += org.codeaurora.camera
 
 #LIBCOPYBIT
 LIBCOPYBIT := copybit.msm8660
@@ -406,6 +411,7 @@ MM_CORE += libOmxCore
 #MM_VIDEO
 MM_VIDEO := ast-mm-vdec-omx-test
 MM_VIDEO += libdivxdrmdecrypt
+MM_VIDEO += libavenhancements
 MM_VIDEO += liblasic
 MM_VIDEO += libOmxVdec
 MM_VIDEO += libOmxVdecHevc
@@ -511,6 +517,9 @@ VT_JNI += libimscamera_jni
 #VT QTI permissions
 VT_QTI_PERMISSIONS := qti_permissions.xml
 
+#IMS SETTINGS
+IMS_SETTINGS := imssettings
+
 #CRDA
 CRDA := crda
 CRDA += regdbdump
@@ -530,6 +539,8 @@ PRODUCT_PACKAGES := \
     BluetoothExt \
     BTTestApp \
     HiddTestApp \
+    BTLogKit \
+    BTLogSave
     Calculator \
     Calendar \
     Camera \
@@ -539,7 +550,6 @@ PRODUCT_PACKAGES := \
     Email \
     Gallery2 \
     LatinIME \
-    Launcher2 \
     Mms \
     Music \
     Phone \
@@ -555,6 +565,7 @@ PRODUCT_PACKAGES := \
     IM \
     VoiceDialer \
     FM2 \
+    FMRadio \
     FMRecord \
     VideoEditor
 
@@ -629,6 +640,7 @@ PRODUCT_PACKAGES += $(WPA)
 PRODUCT_PACKAGES += $(ZLIB)
 PRODUCT_PACKAGES += $(VT_JNI)
 PRODUCT_PACKAGES += $(VT_QTI_PERMISSIONS)
+PRODUCT_PACKAGES += $(IMS_SETTINGS)
 PRODUCT_PACKAGES += $(CRDA)
 PRODUCT_PACKAGES += $(WLAN)
 
@@ -657,7 +669,7 @@ PRODUCT_PACKAGES += vcard
 PRODUCT_PACKAGES += tcmiface
 
 #intialise PRODUCT_PACKAGES_DEBUG list for debug modules
-PRODUCT_PACKAGES_DEBUG :=
+PRODUCT_PACKAGES_DEBUG := init.qcom.testscripts.sh
 
 
 PRODUCT_COPY_FILES := \
@@ -723,10 +735,8 @@ PRODUCT_PACKAGE_OVERLAYS += device/qcom/common/product/overlay
 #Enabling video for live effects
 -include frameworks/base/data/videos/VideoPackage1.mk
 
-#skip boot jars check if QCPATH not available
-ifeq ($(strip $(QCPATH)),)
+#skip boot jars check
 SKIP_BOOT_JARS_CHECK := true
-endif
 
 # For PRODUCT_COPY_FILES, the first instance takes precedence.
 # Since we want use QC specific files, we should inherit

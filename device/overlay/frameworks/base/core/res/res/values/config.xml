@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Copyright (c) 2012-2014, The Linux Foundation. All rights reserved
+<!--Copyright (c) 2012-2015, The Linux Foundation. All rights reserved
 
     Not a Contribution, Apache license notifications and license are retained
     for attribution purposes only.
@@ -49,7 +49,7 @@
     <string-array translatable="false" name="networkAttributes">
         <item>"wifi,1,1,1,-1,true"</item>
         <item>"mobile,0,0,0,-1,true"</item>
-        <item>"mobile_mms,2,0,2,60000,true"</item>
+        <item>"mobile_mms,2,0,4,60000,true"</item>
         <item>"mobile_supl,3,0,2,60000,true"</item>
         <item>"mobile_dun,4,0,2,60000,true"</item>
         <item>"mobile_hipri,5,0,3,60000,true"</item>
@@ -209,22 +209,18 @@
     <!-- Whether camera shutter sound is forced or not  (country specific). -->
     <bool name="config_camera_sound_forced">true</bool>
 
-    <!-- Configuration to enable non-default PDP during IWLAN -->
-    <bool name="config_feature_iwlan_enabled">true</bool>
-
-    <!-- Is the device capable of supporting digital pen -->
-    <bool name="config_digitalPenCapable">false</bool>
 
     <string-array name="config_mobile_tcp_buffers">
         <item>"lte:2097152,4194304,8388608,262144,524288,1048576"</item>
         <item>"umts:4094,87380,1220608,4096,16384,1220608"</item>
         <item>"hspa:4094,87380,1220608,4096,16384,1220608"</item>
         <item>"hsupa:4094,87380,1220608,4096,16384,1220608"</item>
-        <item>"hsdpa:4094,87380,1220608,4096,16384,1220608"</item>
+        <item>"hsdpa:4094,87380,2441216,4096,16384,2441216"</item>
         <item>"hspap:4094,87380,1220608,4096,16384,1220608"</item>
         <item>"edge:4093,26280,35040,4096,16384,35040"</item>
         <item>"gprs:4092,8760,11680,4096,8760,11680"</item>
-        <item>"evdo:4094,87380,524288,4096,16384,262144"</item>
+        <item>"evdo:4094,87380,1048576,4096,16384,262144"</item>
+        <item>"ehrpd:4094,87380,1048576,4096,16384,262144"</item>
     </string-array>
 
     <!-- Flag specifying whether VoLTE & VT is availasble on device -->
@@ -252,4 +248,13 @@
     <bool name="config_enableMultiUserUI">true</bool>
     <!--  Define Google play service package for FRP-->
     <string name="config_persistentDataPackageName" translatable="false">com.google.android.gms</string>
+
+    <!--Fully qualified class name of the plugin which would be
+         dynamically loaded by TelephonyPluginDelegate-->
+    <string name="telephony_plugin_class_name" translatable="false">com.qti.internal.telephony.QtiTelephonyPlugin</string>
+
+    <!--The locatiotion of .jar file which has the extended implementation
+         of telephony base classes.-->
+    <string name="telephony_plugin_lib_path" translatable="false">/system/framework/qti-telephony-common.jar</string>
+
 </resources>
