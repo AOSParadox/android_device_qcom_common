@@ -36,6 +36,8 @@ on init
     mkdir /persist 0771 system system
     mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
     mkdir /storage/sdcard1 0700 root root
+    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
+    mkdir /storage/usbdisk 0700 root root
 
     export EXTERNAL_STORAGE /sdcard
     export SECONDARY_STORAGE /storage/sdcard1
@@ -43,6 +45,11 @@ on init
     # Support legacy paths
     symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
+    symlink /storage/usbdisk /mnt/usbdisk
+    symlink /storage/usbdisk /usbdisk
+
+on fs
+    setprop ro.crypto.fuse_sdcard true
 
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
@@ -245,12 +252,16 @@ on post-fs-data
     mkdir /data/system 0775 system system
     #symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
+    #Create directories for gpsone_daemon services
+    mkdir /data/misc/gpsone_d 0770 system gps
+
+    #Create directories for QuIPS
+    mkdir /data/misc/quipc 0770 gps system
+
     #Create directories for Location services
     mkdir /data/misc/location 0770 gps gps
     mkdir /data/misc/location/mq 0770 gps gps
     mkdir /data/misc/location/xtwifi 0770 gps gps
-    mkdir /data/misc/location/gpsone_d 0770 system gps
-    mkdir /data/misc/location/quipc 0770 gps system
     mkdir /data/misc/location/gsiff 0770 gps gps
 
     #Create directory from IMS services
@@ -282,8 +293,8 @@ service usbhub_init /system/bin/usbhub_init
    disabled
    oneshot
 
-service qcomsysd /system/bin/qcom-system-daemon
-    class main
+#service qcomsysd /system/bin/qcom-system-daemon
+#    class main
 
 service ssr_setup /system/bin/ssr_setup
     oneshot
@@ -366,6 +377,7 @@ service qcom-c_main-sh /system/bin/sh /init.class_main.sh
     oneshot
 
 on property:vold.decrypt=trigger_restart_framework
+    setprop ro.fuse_sdcard ${persist.fuse_sdcard}
     start qcom-c_main-sh
     start config_bluetooth
 
@@ -431,26 +443,28 @@ on property:bluetooth.hciattach=true
 on property:bluetooth.hciattach=false
     setprop bluetooth.status off
 
-service hciattach_ath3k /system/bin/sh /system/etc/init.ath3k.bt.sh
-     class late_start
-     user bluetooth
-     group system bluetooth net_bt_admin misc
-     disabled
-     oneshot
+# Service not used
+#service hciattach_ath3k /system/bin/sh /system/etc/init.ath3k.bt.sh
+#     class late_start
+#     user bluetooth
+#     group system bluetooth net_bt_admin misc
+#     disabled
+#     oneshot
 
-service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
-    class late_start
-    user bluetooth
-    group bluetooth net_bt_admin inet
-    disabled
-    oneshot
+# Service not used
+#service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
+#    class late_start
+#    user bluetooth
+#    group bluetooth net_bt_admin inet
+#    disabled
+#    oneshot
 
-service bt-sap /system/bin/sapd 15
-    user bluetooth
-    group bluetooth net_bt_admin
-    class late_start
-    disabled
-    oneshot
+#service bt-sap /system/bin/sapd 15
+#    user bluetooth
+#    group bluetooth net_bt_admin
+#    class late_start
+#    disabled
+#    oneshot
 
 service btsnoop /system/bin/btsnoop
    user bluetooth
@@ -477,11 +491,12 @@ service netmgrd /system/bin/netmgrd
     class main
     disabled
 
-service sensors /system/bin/sensors.qcom
-    class late_start
-    user root
-    group root
-    disabled
+# Service not used
+#service sensors /system/bin/sensors.qcom
+#    class late_start
+#    user root
+#    group root
+#    disabled
 
 on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
@@ -499,23 +514,24 @@ service btwlancoex /system/bin/sh /system/etc/init.qcom.coex.sh
     disabled
     oneshot
 
-service amp_init /system/bin/amploader -i
-    class late_start
-    user root
-    disabled
-    oneshot
-
-service amp_load /system/bin/amploader -l 7000
-    class late_start
-    user root
-    disabled
-    oneshot
-
-service amp_unload /system/bin/amploader -u
-    class late_start
-    user root
-    disabled
-    oneshot
+# Service not used
+#service amp_init /system/bin/amploader -i
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
+#
+#service amp_load /system/bin/amploader -l 7000
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
+#
+#service amp_unload /system/bin/amploader -u
+#    class late_start
+#    user root
+#    disabled
+#    oneshot
 
 service p2p_supplicant /system/bin/wpa_supplicant \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
@@ -625,17 +641,18 @@ on property:crypto.driver.load=1
      insmod /system/lib/modules/qce.ko
      insmod /system/lib/modules/qcedev.ko
 
-service drmdiag /system/bin/drmdiagapp
-    class late_start
-     user root
-     disabled
-     oneshot
-
-on property:drmdiag.load=1
-    start drmdiag
-
-on property:drmdiag.load=0
-    stop drmdiag
+# Service not used
+#service drmdiag /system/bin/drmdiagapp
+#    class late_start
+#     user root
+#     disabled
+#     oneshot
+#
+#on property:drmdiag.load=1
+#    start drmdiag
+#
+#on property:drmdiag.load=0
+#    stop drmdiag
 
 service qcom-sh /system/bin/sh /init.qcom.sh
     class late_start
@@ -684,22 +701,24 @@ service hostapd /system/bin/hostapd -dd /data/hostapd/hostapd.conf
     oneshot
     disabled
 
-service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
-    class late_start
-    group net_bt_admin inet radio wifi
-    disabled
+# Service not used
+#service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
+#    class late_start
+#    group net_bt_admin inet radio wifi
+#    disabled
 
-on property:persist.ims.regmanager.mode=1
-    start ims_regmanager
+#on property:persist.ims.regmanager.mode=1
+#    start ims_regmanager
 
 on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
-service battery_monitor /system/bin/battery_monitor
-    user system
-    group system
-    disabled
+# Service not used
+#service battery_monitor /system/bin/battery_monitor
+#    user system
+#    group system
+#    disabled
 
 service ril-daemon2 /system/bin/rild -c 2
     class main
@@ -735,55 +754,59 @@ on property:usb_uicc.enabled=1
 on property:usb_uicc.enabled=0
     start usb_uicc_enable
 
-service profiler_daemon /system/bin/profiler_daemon
-    class late_start
-    user root
-    group root
-    disabled
+# Service not used
+#service profiler_daemon /system/bin/profiler_daemon
+#    class late_start
+#    user root
+#    group root
+#    disabled
 
 service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
     class late_start
     disabled
 
-service fuse_uicc0 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/uicc0 /storage/uicc0
-    class late_start
-    disabled
-
-service fuse_uicc1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/uicc1 /storage/uicc1
+service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk /storage/usbdisk
     class late_start
     disabled
 
 on property:ro.fuse_sdcard=true
     start sdcard
 
-service hcidump /system/bin/sh /system/etc/hcidump.sh
-    user bluetooth
-    group bluetooth system net_bt_admin net_admin
-    disabled
-    oneshot
+# This will make sure that sdcard service starts as late_start.
+on nonencrypted
+    setprop ro.fuse_sdcard ${persist.fuse_sdcard}
+
+# Service not used
+#service hcidump /system/bin/sh /system/etc/hcidump.sh
+#    user bluetooth
+#    group bluetooth system net_bt_admin net_admin
+#    disabled
+#    oneshot
 
 service charger /charger
     class charger
 
-service ssr_diag /system/bin/ssr_diag
-    class late_start
-    user system
-    group system
-    disabled
+#service ssr_diag /system/bin/ssr_diag
+#    class late_start
+#    user system
+#    group system
+#    disabled
 
+# Service not used
 # Define fastmmi
-service fastmmi /system/bin/mmi
-    user root
-    group root
-    disabled
+#service fastmmi /system/bin/mmi
+#    user root
+#    group root
+#    disabled
 
-service fastmmisrv /system/bin/sh /init.qcom.factory.sh
-    user root
-    disabled
-    oneshot
-
-on ffbm
-    start fastmmisrv
+# Service not used
+#service fastmmisrv /system/bin/sh /init.qcom.factory.sh
+#    user root
+#    disabled
+#    oneshot
+#
+#on ffbm
+#    start fastmmisrv
 
 service hvdcp /system/bin/hvdcp
     class core
@@ -796,10 +819,10 @@ on property:persist.usb.hvdcp.detect=true
 on property:persist.usb.hvdcp.detect=false
     stop hvdcp
 
-service charger_monitor /system/bin/charger_monitor
-    user system
-    group system
-    disabled
+#service charger_monitor /system/bin/charger_monitor
+#    user system
+#    group system
+#    disabled
 
 service qbcharger /charger -m 1
     disabled
@@ -811,35 +834,35 @@ on property:sys.qbcharger.enable=true
 on property:sys.qbcharger.enable=false
     stop qbcharger
 
-service diag_mdlog_start /system/bin/diag_mdlog
-    class late_start
-    user shell
-    group system qcom_diag sdcard_rw sdcard_r media_rw
-    disabled
-    oneshot
+#service diag_mdlog_start /system/bin/diag_mdlog
+#    class late_start
+#    user shell
+#    group system qcom_diag sdcard_rw sdcard_r media_rw
+#    disabled
+#    oneshot
 
-service diag_mdlog_stop /system/bin/diag_mdlog -k
-    class late_start
-    user shell
-    group system qcom_diag sdcard_rw sdcard_r media_rw
-    disabled
-    oneshot
+#service diag_mdlog_stop /system/bin/diag_mdlog -k
+#    class late_start
+#    user shell
+#    group system qcom_diag sdcard_rw sdcard_r media_rw
+#    disabled
+#    oneshot
 
-service qlogd /system/xbin/qlogd
-    class main
-    disabled
-on property:persist.sys.qlogd=1
-    start qlogd
-on property:persist.sys.qlogd=0
-    stop qlogd
+#service qlogd /system/xbin/qlogd
+#    class main
+#    disabled
+#on property:persist.sys.qlogd=1
+#    start qlogd
+#on property:persist.sys.qlogd=0
+#    stop qlogd
 
-service rootagent /system/bin/sh /system/etc/init.qcom.rootagent.sh
-    disabled
-    oneshot
-on property:persist.sys.rootagent=1
-    start rootagent
-on property:persist.sys.rootagent=0
-    stop rootagent
+#service rootagent /system/bin/sh /system/etc/init.qcom.rootagent.sh
+#    disabled
+#    oneshot
+#on property:persist.sys.rootagent=1
+#    start rootagent
+#on property:persist.sys.rootagent=0
+#    stop rootagent
 
 service RIDL /system/vendor/bin/RIDLClient.exe
     class late_start
