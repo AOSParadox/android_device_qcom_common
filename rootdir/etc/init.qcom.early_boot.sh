@@ -209,3 +209,6 @@ dev_file=/dev/graphics/fb$fb_cnt
   fi
 done
 
+# Set date to a time after 2008
+# This is a workaround for Zygote to preload time related classes properly
+date -s 20090102.130000
