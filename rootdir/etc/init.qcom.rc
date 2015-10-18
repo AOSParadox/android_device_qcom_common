@@ -36,8 +36,6 @@ on init
     mkdir /persist 0771 system system
     mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
     mkdir /storage/sdcard1 0700 root root
-    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
-    mkdir /storage/usbdisk 0700 root root
 
     export EXTERNAL_STORAGE /sdcard
     export SECONDARY_STORAGE /storage/sdcard1
@@ -45,11 +43,6 @@ on init
     # Support legacy paths
     symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
-    symlink /storage/usbdisk /mnt/usbdisk
-    symlink /storage/usbdisk /usbdisk
-
-on fs
-    setprop ro.crypto.fuse_sdcard true
 
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
@@ -377,7 +370,6 @@ service qcom-c_main-sh /system/bin/sh /init.class_main.sh
     oneshot
 
 on property:vold.decrypt=trigger_restart_framework
-    setprop ro.fuse_sdcard ${persist.fuse_sdcard}
     start qcom-c_main-sh
     start config_bluetooth
 
@@ -761,16 +753,6 @@ on property:usb_uicc.enabled=0
 #    group root
 #    disabled
 
-service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
-    class late_start
-    disabled
-
-service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk /storage/usbdisk
-    class late_start
-    disabled
-
-on property:ro.fuse_sdcard=true
-    start sdcard
 
 # This will make sure that sdcard service starts as late_start.
 on nonencrypted
