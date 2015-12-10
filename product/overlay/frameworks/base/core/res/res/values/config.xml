@@ -33,16 +33,26 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <resources>
 
     <!-- Enable overlay for all location components. -->
-    <bool name="config_enableNetworkLocationOverlay" translatable="false">false</bool>
+    <!-- <bool name="config_enableNetworkLocationOverlay" translatable="false">false</bool>
     <bool name="config_enableFusedLocationOverlay" translatable="false">false</bool>
-    <string name="config_networkLocationProviderPackageName" translatable="false">com.qualcomm.location</string>
-    <string name="config_fusedLocationProviderPackageName" translatable="false">com.qualcomm.location</string>
+    <string name="config_networkLocationProviderPackageName" translatable="false">@null</string>
+    <string name="config_fusedLocationProviderPackageName" translatable="false">@null</string> -->
     <bool name="config_allowAllRotations">true</bool>
+
     <!-- Enable doze mode -->
     <string name="config_dozeComponent">com.android.systemui/com.android.systemui.doze.DozeService</string>
     <bool name="config_dozeAfterScreenOff">true</bool>
+
     <!-- Screen brightness when dozing. -->
     <integer name="config_screenBrightnessDoze">17</integer>
     <bool name="config_powerDecoupleInteractiveModeFromDisplay">true</bool>
+
+    <!-- Global actions -->
+    <string-array name="config_globalActionsList" translatable="false">
+        <item>power</item>
+        <item>reboot</item>
+        <item>airplane</item>
+        <item>bugreport</item>
+    </string-array>
 
 </resources>
