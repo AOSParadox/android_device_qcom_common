@@ -169,9 +169,14 @@ EBTABLES += libebtc
 FASTPOWERON := FastBoot
 
 #FM
-FM := qcom.fmradio
+FM := libfmjni
+
+ifneq ($(PRODUCT_BRAND),YU)
+FM += qcom.fmradio
 FM += libqcomfm_jni
-FM += libfmjni
+FM += FMRecord
+FM += FM2
+endif
 
 #GPS
 GPS_HARDWARE := gps.conf
@@ -291,6 +296,13 @@ KEYPAD += ue_rf4ce_remote.kl
 KS := ks
 KS += qcks
 KS += efsks
+
+#LAUNCHER
+LAUNCHER := Launcher2
+LAUNCHER += Launcher3
+LAUNCHER += libemoji
+LAUNCHER += Browser
+LAUNCHER += libsepol
 
 #LIB_NL
 LIB_NL := libnl_2
@@ -635,11 +647,7 @@ PRODUCT_PACKAGES := \
 ifneq ($(TARGET_USES_AOSP),true)
 PRODUCT_PACKAGES += \
        BluetoothExt \
-       BTTestApp \
-       HiddTestApp \
        a4wpservice \
-       BTLogKit \
-       BTLogSave \
        wipowerservice
 endif
 
@@ -678,6 +686,7 @@ PRODUCT_PACKAGES += $(IPTABLES)
 PRODUCT_PACKAGES += $(KERNEL_TESTS)
 PRODUCT_PACKAGES += $(KEYPAD)
 PRODUCT_PACKAGES += $(KS)
+PRODUCT_PACKAGES += $(LAUNCHER)
 PRODUCT_PACKAGES += $(LIB_NL)
 PRODUCT_PACKAGES += $(LIB_XML2)
 PRODUCT_PACKAGES += $(LIBCAMERA)
