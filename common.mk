@@ -775,3 +775,7 @@ ifeq ($(TARGET_BUILD_VARIANT),user)
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES+= \
     ro.adb.secure=1
 endif
+
+# Proprietary latinime libs needed for Keyboard swyping
+PRODUCT_COPY_FILES += \
+    device/qcom/common/prebuilt/lib/libjni_latinime.so:system/lib/libjni_latinime.so
