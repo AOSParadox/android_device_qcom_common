@@ -658,6 +658,7 @@ PRODUCT_PACKAGES := \
     Gallery2 \
     LatinIME \
     Music \
+    MusicFX \
     Phone \
     Provision \
     Protips \
