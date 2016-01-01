@@ -315,7 +315,7 @@ KS += qcks
 KS += efsks
 
 #LAUNCHER
-LAUNCHER := Launcher2
+#LAUNCHER := Launcher2
 LAUNCHER += Launcher3
 LAUNCHER += libemoji
 LAUNCHER += Browser
