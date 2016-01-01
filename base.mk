@@ -318,6 +318,7 @@ LAUNCHER += Launcher3
 LAUNCHER += libemoji
 LAUNCHER += Browser
 LAUNCHER += libsepol
+LAUNCHER += messaging
 
 #LIB_NL
 LIB_NL := libnl_2
@@ -643,7 +644,6 @@ PRODUCT_PACKAGES := \
     Email \
     Gallery2 \
     LatinIME \
-    Mms \
     Music \
     Phone \
     Provision \
