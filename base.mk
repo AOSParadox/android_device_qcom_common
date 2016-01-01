@@ -4,7 +4,7 @@ QCOM_BOARD_PLATFORMS += msm8994
 QCOM_BOARD_PLATFORMS += msm8992
 
 TARGET_USE_VENDOR_CAMERA_EXT := true
-ANDROID_COMPILE_WITH_JACK := false
+ANDROID_COMPILE_WITH_JACK := true
 
 #List of targets that use video hw
 MSM_VIDC_TARGET_LIST := msm8974 msm8610 msm8226 apq8084 msm8916 msm8994 msm8909 msm8992
@@ -298,7 +298,7 @@ KS += qcks
 KS += efsks
 
 #LAUNCHER
-LAUNCHER := Launcher2
+#LAUNCHER := Launcher2
 LAUNCHER += Launcher3
 LAUNCHER += libemoji
 LAUNCHER += Browser
