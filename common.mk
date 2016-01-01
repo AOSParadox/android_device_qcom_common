@@ -8,7 +8,7 @@ QSD8K_BOARD_PLATFORMS := qsd8k
 
 #TARGET_USE_VENDOR_CAMERA_EXT := true
 
-ANDROID_COMPILE_WITH_JACK := false
+ANDROID_COMPILE_WITH_JACK := true
 
 # Below projects/packages with LOCAL_MODULEs will be used by
 # PRODUCT_PACKAGES to build LOCAL_MODULEs that are tagged with
@@ -145,9 +145,13 @@ EBTABLES += libebtc
 FASTPOWERON := FastBoot
 
 #FM
-FM := qcom.fmradio
+ifeq ($(AUDIO_FEATURE_ENABLED_FM),YU)
+FM := libfmjni
+FM += qcom.fmradio
 FM += libqcomfm_jni
-FM += libfmjni
+FM += FMRecord
+FM += FM2
+endif
 
 #GPS
 GPS_HARDWARE := gps.conf
@@ -259,6 +263,14 @@ KEYPAD += ue_rf4ce_remote.kl
 KS := ks
 KS += qcks
 KS += efsks
+
+#LAUNCHER
+#LAUNCHER := Launcher2
+LAUNCHER += Launcher3
+LAUNCHER += libemoji
+LAUNCHER += Browser
+LAUNCHER += libsepol
+LAUNCHER += messaging
 
 #LIB_NL
 LIB_NL := libnl_2
@@ -537,9 +549,6 @@ PRODUCT_PACKAGES := \
     DeskClock \
     AlarmProvider \
     Bluetooth \
-    BluetoothExt \
-    BTTestApp \
-    HiddTestApp \
     Calculator \
     Calendar \
     Camera \
@@ -549,9 +558,8 @@ PRODUCT_PACKAGES := \
     Email \
     Gallery2 \
     LatinIME \
-    Launcher2 \
-    Mms \
     Music \
+    MusicFX \
     Phone \
     Provision \
     Protips \
@@ -564,10 +572,14 @@ PRODUCT_PACKAGES := \
     SyncProvider \
     IM \
     VoiceDialer \
-    FM2 \
     FMRadio \
-    FMRecord \
     VideoEditor
+
+
+ifneq ($(TARGET_USES_AOSP),true)
+PRODUCT_PACKAGES += \
+       BluetoothExt
+endif
 
 PRODUCT_PACKAGES += $(ALSA_HARDWARE)
 PRODUCT_PACKAGES += $(ALSA_UCM)
@@ -601,6 +613,7 @@ PRODUCT_PACKAGES += $(IPTABLES)
 PRODUCT_PACKAGES += $(KERNEL_TESTS)
 PRODUCT_PACKAGES += $(KEYPAD)
 PRODUCT_PACKAGES += $(KS)
+PRODUCT_PACKAGES += $(LAUNCHER)
 PRODUCT_PACKAGES += $(LIB_NL)
 PRODUCT_PACKAGES += $(LIB_XML2)
 PRODUCT_PACKAGES += $(LIBCAMERA)
