@@ -837,6 +837,8 @@ PRODUCT_COPY_FILES += \
 # source/resources etc.
 DEVICE_PACKAGE_OVERLAYS += device/qcom/common/device/overlay
 PRODUCT_PACKAGE_OVERLAYS += device/qcom/common/product/overlay
+DEVICE_PACKAGE_OVERLAYS += device/qcom/common/device/icon-overlay
+PRODUCT_PACKAGE_OVERLAYS += device/qcom/common/device/icon-overlay
 
 # include additional build utilities
 -include device/qcom/common/utils.mk
