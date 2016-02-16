@@ -776,3 +776,7 @@ ifeq ($(TARGET_BUILD_VARIANT),user)
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES+= \
     ro.adb.secure=1
 endif
+
+# Inherit some common AOSParadox stuff.
+$(call inherit-product-if-exists, vendor/aosparadox/common.mk)
+
