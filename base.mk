@@ -631,6 +631,7 @@ PRODUCT_PACKAGES := \
     Calculator \
     Calendar \
     Camera \
+    SnapdragonCamera \
     CellBroadcastReceiver \
     CertInstaller \
     DrmProvider \
