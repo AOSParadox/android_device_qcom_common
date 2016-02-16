@@ -887,6 +887,9 @@ endif
 #Enabling video for live effects
 -include frameworks/base/data/videos/VideoPackage1.mk
 
+# Inherit some common AOSParadox stuff.
+$(call inherit-product-if-exists, vendor/aosparadox/common.mk)
+
 # dm-verity definitions
 PRODUCT_VERITY_PARTITION=/dev/block/bootdevice/by-name/system
 $(call inherit-product, build/target/product/verity.mk)
