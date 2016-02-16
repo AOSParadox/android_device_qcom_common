@@ -780,3 +780,7 @@ endif
 # Proprietary latinime libs needed for Keyboard swyping
 PRODUCT_COPY_FILES += \
     device/qcom/common/prebuilt/lib/libjni_latinime.so:system/lib/libjni_latinime.so
+
+# Inherit some common AOSParadox stuff.
+$(call inherit-product-if-exists, vendor/aosparadox/common.mk)
+
