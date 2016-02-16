@@ -32,7 +32,3 @@ $(call inherit-product, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
 # APN list
 PRODUCT_COPY_FILES += \
     device/qcom/common/apns-conf.xml:system/etc/apns-conf.xml
-
-# Boot Animation
-PRODUCT_COPY_FILES += \
-    device/qcom/common/bootanimation.zip:system/media/bootanimation.zip
