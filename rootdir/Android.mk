@@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 # files that live under device/qcom/common/rootdir/etc/
-
+ifneq ($(strip $(TARGET_USE_CM_RAMDISK)),true)
 include $(CLEAR_VARS)
 LOCAL_MODULE       := init.qcom.early_boot.sh
 LOCAL_MODULE_TAGS  := optional eng
@@ -232,3 +232,4 @@ LOCAL_MODULE_TAGS  := optional eng
 LOCAL_MODULE_CLASS := ETC
 LOCAL_SRC_FILES    := etc/init.qcom.uicc.sh
 include $(BUILD_PREBUILT)
+endif # TARGET_USE_CM_RAMDISK

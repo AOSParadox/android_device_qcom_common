@@ -94,8 +94,12 @@ ifeq ($(strip $(BUILD_TINY_ANDROID)),true)
 include device/qcom/common/dtbtool/Android.mk
 endif
 
+# VENDOR_EDIT: We use our own dtbTool (actually it's just dtbTool v2)
+ifeq ($(PRODUCT_BRAND),YU)
+DTBTOOL := $(HOST_OUT_EXECUTABLES)/dtbToolCM$(HOST_EXECUTABLE_SUFFIX)
+else
 DTBTOOL := $(HOST_OUT_EXECUTABLES)/dtbTool$(HOST_EXECUTABLE_SUFFIX)
-
+endif # PRODUCT_BRAND
 INSTALLED_DTIMAGE_TARGET := $(PRODUCT_OUT)/dt.img
 
 possible_dtb_dirs = $(KERNEL_OUT)/arch/$(TARGET_KERNEL_ARCH)/boot/dts/ $(KERNEL_OUT)/arch/arm/boot/dts/ $(KERNEL_OUT)/arch/arm/boot/
@@ -103,7 +107,11 @@ dtb_dir = $(firstword $(wildcard $(possible_dtb_dirs)))
 
 define build-dtimage-target
     $(call pretty,"Target dt image: $(INSTALLED_DTIMAGE_TARGET)")
+ifeq ($(PRODUCT_BRAND),YU)
+    $(hide) $(DTBTOOL) -2 -o $@ -s $(BOARD_KERNEL_PAGESIZE) -p $(KERNEL_OUT)/scripts/dtc/ $(dtb_dir)
+else
     $(hide) $(DTBTOOL) -o $@ -s $(BOARD_KERNEL_PAGESIZE) -p $(KERNEL_OUT)/scripts/dtc/ $(dtb_dir)
+endif # PRODUCT_BRAND
     $(hide) chmod a+r $@
 endef
 

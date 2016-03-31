@@ -18,7 +18,13 @@ QCOM_BOARD_PLATFORMS += msm8909w
 QSD8K_BOARD_PLATFORMS := qsd8k
 
 TARGET_USE_VENDOR_CAMERA_EXT := true
+
+# VENDOR_EDIT : Enable JACK on YU builds
+ifeq ($(PRODUCT_BRAND),YU)
+ANDROID_COMPILE_WITH_JACK := true
+else
 ANDROID_COMPILE_WITH_JACK := false
+endif # PRODUCT_BRAND
 
 #List of targets that use video hw
 MSM_VIDC_TARGET_LIST := msm8974 msm8610 msm8226 apq8084 msm8916 msm8994 msm8909
@@ -186,9 +192,14 @@ EBTABLES += libebtc
 FASTPOWERON := FastBoot
 
 #FM
-FM := qcom.fmradio
+FM := libfmjni
+# VENDOR_EDIT : Use AOSP FM packages
+ifneq ($(PRODUCT_BRAND),YU)
+FM += qcom.fmradio
 FM += libqcomfm_jni
-FM += libfmjni
+FM += FMRecord
+FM += FM2
+endif
 
 #GPS
 GPS_HARDWARE := gps.conf
@@ -641,19 +652,13 @@ PRODUCT_PACKAGES := \
     SyncProvider \
     IM \
     VoiceDialer \
-    FM2 \
     FMRadio \
-    FMRecord \
     VideoEditor
 
 
 ifneq ($(TARGET_USES_AOSP),true)
 PRODUCT_PACKAGES += \
-       BluetoothExt \
-       BTTestApp \
-       HiddTestApp \
-       BTLogKit \
-       BTLogSave
+       BluetoothExt
 endif
 
 PRODUCT_PACKAGES += $(ALSA_HARDWARE)
