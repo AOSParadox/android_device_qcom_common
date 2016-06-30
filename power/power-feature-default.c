@@ -42,6 +42,20 @@ void set_device_specific_feature(struct power_module *module __unused,
     }
 #endif
 
+#ifdef DRAW_C_NODE
+    if (feature == POWER_FEATURE_DRAW_C) {
+        sysfs_write(DRAW_C_NODE, tmp_str);
+        return;
+    }
+#endif
+
+#ifdef DRAW_E_NODE
+    if (feature == POWER_FEATURE_DRAW_E) {
+        sysfs_write(DRAW_E_NODE, tmp_str);
+        return;
+    }
+#endif
+
 #ifdef DRAW_V_NODE
     if (feature == POWER_FEATURE_DRAW_V) {
         sysfs_write(DRAW_V_NODE, tmp_str);
