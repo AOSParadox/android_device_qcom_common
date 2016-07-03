@@ -232,12 +232,20 @@ int __attribute__ ((weak)) set_interactive_override(struct power_module *module,
     return HINT_NONE;
 }
 
+#ifdef SET_INTERACTIVE_EXT
+extern void power_set_interactive_ext(int on);
+#endif
+
 void set_interactive(struct power_module *module, int on)
 {
     char governor[80];
     char tmp_str[NODE_MAX];
     struct video_encode_metadata_t video_encode_metadata;
     int rc;
+
+#ifdef SET_INTERACTIVE_EXT
+    power_set_interactive_ext(on);
+#endif
 
     if (set_interactive_override(module, on) == HINT_HANDLED) {
         return;
