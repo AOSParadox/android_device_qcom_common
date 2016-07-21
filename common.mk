@@ -157,10 +157,13 @@ endif
 GPS_HARDWARE := gps.conf
 GPS_HARDWARE += gps.default
 GPS_HARDWARE += gps.mahimahi
+GPS_HARDWARE += gps.msm8974
 GPS_HARDWARE += libloc_adapter
 GPS_HARDWARE += libgps.utils
 GPS_HARDWARE += libloc_eng
 GPS_HARDWARE += libloc_api_v02
+GPS_HARDWARE += libloc_ds_api
+GPS_HARDWARE += libloc_core
 
 #HDMID
 HDMID := hdmid
