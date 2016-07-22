@@ -612,9 +612,11 @@ CRDA += linville.key.pub.pem
 CRDA += init.crda.sh
 
 #WLAN
+ifneq ($(TARGET_DEVICE),angler)
 WLAN := prima_wlan.ko
 WLAN += pronto_wlan.ko
 WLAN += wcnss_service
+endif
 
 #IMS SETTINGS
 IMS_SETTINGS := imssettings
