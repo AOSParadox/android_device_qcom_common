@@ -793,3 +793,7 @@ endif
 # Inherit some common AOSParadox stuff.
 $(call inherit-product-if-exists, vendor/aosparadox/common.mk)
 
+# APN list
+PRODUCT_COPY_FILES += \
+    device/qcom/common/apns-conf.xml:system/etc/apns-conf.xml
+
