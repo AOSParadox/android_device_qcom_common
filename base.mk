@@ -181,6 +181,7 @@ endif
 #GPS
 GPS_HARDWARE := gps.conf
 GPS_HARDWARE += gps.default
+GPS_HARDWARE += gps.msm8994
 GPS_HARDWARE += gps.mahimahi
 GPS_HARDWARE += libloc_adapter
 GPS_HARDWARE += libgps.utils
@@ -296,6 +297,11 @@ KEYPAD += ue_rf4ce_remote.kl
 KS := ks
 KS += qcks
 KS += efsks
+
+# KEYSTORE
+KEYSTORE := keystore.qcom
+KEYSTORE += keystore.msm8974
+KEYSTORE += keystore.msm8226
 
 #LAUNCHER
 #LAUNCHER := Launcher2
@@ -459,6 +465,7 @@ LIBQDMETADATA := libqdMetaData
 
 #LIBPOWER
 LIBPOWER := power.qcom
+LIBPOWER += power.msm8994
 
 #LLVM for RenderScript
 #use qcom LLVM
@@ -607,6 +614,7 @@ CRDA += init.crda.sh
 #WLAN
 WLAN := prima_wlan.ko
 WLAN += pronto_wlan.ko
+WLAN += wcnss_service
 
 #IMS SETTINGS
 IMS_SETTINGS := imssettings
@@ -688,6 +696,7 @@ PRODUCT_PACKAGES += $(IPTABLES)
 PRODUCT_PACKAGES += $(KERNEL_TESTS)
 PRODUCT_PACKAGES += $(KEYPAD)
 PRODUCT_PACKAGES += $(KS)
+PRODUCT_PACKAGES += $(KEYSTORE)
 PRODUCT_PACKAGES += $(LAUNCHER)
 PRODUCT_PACKAGES += $(LIB_NL)
 PRODUCT_PACKAGES += $(LIB_XML2)
@@ -746,6 +755,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     make_ext4fs \
     setup_fs
+
+# fingerprintd
+PRODUCT_PACKAGES += fingerprintd
 
 # Qcril configuration file
 PRODUCT_PACKAGES += qcril.db
