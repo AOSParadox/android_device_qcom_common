@@ -145,12 +145,13 @@ EBTABLES += libebtc
 FASTPOWERON := FastBoot
 
 #FM
-ifeq ($(AUDIO_FEATURE_ENABLED_FM),YU)
+ifeq ($(AUDIO_FEATURE_ENABLED_FM),true)
 FM := libfmjni
 FM += qcom.fmradio
 FM += libqcomfm_jni
 FM += FMRecord
 FM += FM2
+FM += FMRadio
 endif
 
 #GPS
@@ -585,7 +586,6 @@ PRODUCT_PACKAGES := \
     SyncProvider \
     IM \
     VoiceDialer \
-    FMRadio \
     VideoEditor
 
 
