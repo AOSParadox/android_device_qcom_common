@@ -321,6 +321,8 @@ LAUNCHER += libemoji
 LAUNCHER += Browser
 LAUNCHER += libsepol
 LAUNCHER += messaging
+LAUNCHER += masquerade # Substratum
+LAUNCHER += PARWallpapers
 
 #LIB_NL
 LIB_NL := libnl_2
