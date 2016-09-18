@@ -28,9 +28,10 @@
  */
 
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "vendor_init.h"
-#include "property_service.h"
+#include <cutils/properties.h>
 #include "log.h"
 #include "util.h"
 
@@ -58,7 +59,7 @@ void init_msm_properties(unsigned long msm_id, unsigned long msm_ver, char *boar
     UNUSED(msm_ver);
     UNUSED(board_type);
 
-    rc = property_get("ro.board.platform", platform);
+    rc = property_get("ro.board.platform", platform, NULL);
     if (!rc || !ISMATCH(platform, ANDROID_TARGET))
         return;
 
