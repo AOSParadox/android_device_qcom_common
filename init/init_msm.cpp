@@ -37,7 +37,7 @@
 #include <private/android_filesystem_config.h>
 
 #include "vendor_init.h"
-#include "property_service.h"
+#include <cutils/properties.h>
 #include "log.h"
 #include "util.h"
 
@@ -136,7 +136,7 @@ void init_alarm_boot_properties()
     char buf[BUF_SIZE];
     char tmp[PROP_VALUE_MAX]="";
 
-    property_get("ro.boot.alarmboot", tmp);
+    property_get("ro.boot.alarmboot", tmp, NULL);
 
     if(read_file2(alarm_file, buf, sizeof(buf))) {
 
@@ -223,7 +223,7 @@ static int check_rlim_action()
     char pval[PROP_VALUE_MAX];
     int rc;
     struct rlimit rl;
-    rc = property_get("persist.debug.trace",pval);
+    rc = property_get("persist.debug.trace",pval, NULL);
 
     if(rc && (strcmp(pval,"1") == 0)) {
         rl.rlim_cur = RLIM_INFINITY;
