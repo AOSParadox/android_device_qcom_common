@@ -646,7 +646,6 @@ PRODUCT_PACKAGES := \
     Phone \
     Provision \
     Protips \
-    QuickSearchBox \
     Settings \
     Sync \
     SystemUI \
