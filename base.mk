@@ -653,6 +653,7 @@ PRODUCT_PACKAGES := \
     Calculator \
     Calendar \
     Camera \
+    CMUpdater \
     SnapdragonCamera \
     CellBroadcastReceiver \
     CertInstaller \
