@@ -32,11 +32,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <resources>
 
-    <!-- Enable overlay for all location components. -->
-    <!-- <bool name="config_enableNetworkLocationOverlay" translatable="false">false</bool>
-    <bool name="config_enableFusedLocationOverlay" translatable="false">false</bool>
-    <string name="config_networkLocationProviderPackageName" translatable="false">@null</string>
-    <string name="config_fusedLocationProviderPackageName" translatable="false">@null</string> -->
     <bool name="config_allowAllRotations">true</bool>
 
     <!-- Enable doze mode -->
