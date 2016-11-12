@@ -9,8 +9,14 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 PRODUCT_BRAND := qcom
 PRODUCT_AAPT_CONFIG += hdpi mdpi
 
+ifneq ($(HOST_OS),linux)
+$(warning ****************************************************************)
+$(warning * SDCLANG is not supported on non-linux hosts. Disabling...)
+$(warning ****************************************************************)
+else
 # include definitions for SDCLANG
 include device/qcom/common/sdclang/sdclang.mk
+endif
 
 ifndef PRODUCT_MANUFACTURER
 PRODUCT_MANUFACTURER := QUALCOMM
