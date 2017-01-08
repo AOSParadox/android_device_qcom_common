@@ -117,7 +117,7 @@ $(KBUILD_TARGET)_RULE := 1
 # do not. Therefore, we need to explicitly include kernel/AndroidKernel.mk.
 # It is safe to include it more than once because the entire file is
 # guarded by "ifeq ($(TARGET_PREBUILT_KERNEL),) ... endif".
-include kernel/AndroidKernel.mk
+include kernel/yu/msm8916/AndroidKernel.mk
 
 # Kernel modules have to be built after:
 #  * the kernel config has been created
