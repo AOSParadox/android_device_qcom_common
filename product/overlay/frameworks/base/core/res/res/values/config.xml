@@ -42,6 +42,9 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <integer name="config_screenBrightnessDoze">17</integer>
     <bool name="config_powerDecoupleInteractiveModeFromDisplay">true</bool>
 
+    <!-- Enable Night display, which requires HWC 2.0. -->
+    <bool name="config_nightDisplayAvailable">true</bool>
+
     <!-- Global actions -->
     <string-array name="config_globalActionsList" translatable="false">
         <item>power</item>
